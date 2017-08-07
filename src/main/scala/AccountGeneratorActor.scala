@@ -5,7 +5,7 @@ import akka.routing.{ActorRefRoutee, RoundRobinRoutingLogic, Router}
 class AccountGeneratorActorMaster(accountDatabaseServices: AccountDatabaseServices) extends Actor with ActorLogging
   with RequiresMessageQueue[BoundedMessageQueueSemantics]{
 
-  var accountNo= 0
+  var accountNo= 2
 
   var router: Router = {
       log.info("Creating user Account ")
@@ -27,7 +27,7 @@ class AccountGeneratorActorMaster(accountDatabaseServices: AccountDatabaseServic
         }
         else {
           log.error("This Username already exist try another one")
-          sender() ! s"${customerAccount(2)} already exist"
+          sender() ! (customerAccount(2),"username already exist")
         }
       case _ => log.error("Invalid List")
     }
@@ -44,11 +44,11 @@ class AccountGeneratorActorMaster(accountDatabaseServices: AccountDatabaseServic
 class AccountGeneratorActor(accountDatabaseServices: AccountDatabaseServices) extends Actor with ActorLogging {
 
   override def receive: Receive = {
-    case listInfo : List[String]=>
+    case listInfo : List[String] =>
       log.info("creating your account")
       val customerAccount = CustomerAccount(listInfo)
       accountDatabaseServices.addAccount(customerAccount.username,customerAccount)
-      sender() ! s"${customerAccount.username} created successfullu "
+      sender() ! (customerAccount.username, "created successfully")
     case _=> log.error("Error while creating your account")
       sender()! "Error while creating account"
   }
