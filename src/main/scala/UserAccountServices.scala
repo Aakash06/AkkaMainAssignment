@@ -1,7 +1,6 @@
 import akka.actor.ActorRef
 import akka.pattern.ask
 import akka.util.Timeout
-
 import scala.concurrent.duration.DurationInt
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -25,7 +24,6 @@ class UserAccountServices {
 
     implicit val timeout = Timeout(10 seconds)
     (linkedBillerToAccountRef ? (accountNo, billerName, billerCategory)).mapTo[String]
-
   }
 
 }

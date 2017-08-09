@@ -18,6 +18,7 @@ class AccountGeneratorActorMaster(accountDatabaseServices: AccountDatabaseServic
   }
 
   def receive:Receive = {
+
     case customerAccount: List[_] => customerAccount.head match {
       case userName : String => log.info("Checking Is username already exist or not")
         if(!accountDatabaseServices.checkUserName(customerAccount(2).toString)){
@@ -31,13 +32,14 @@ class AccountGeneratorActorMaster(accountDatabaseServices: AccountDatabaseServic
         }
       case _ => log.error("Invalid List")
     }
-
+      log.info("hvhjvhjvhv")
     case Terminated(a) =>
       log.info("Terminating")
       router = router.removeRoutee(a)
       val r = context.actorOf(Props[AccountGeneratorActor])
       context watch r
       router = router.addRoutee(r)
+      sender() ! "Invalid List"
   }
 }
 
@@ -65,4 +67,4 @@ object AccountGeneratorActor {
 
   def props(accountDatabaseServices: AccountDatabaseServices): Props = Props(classOf[AccountGeneratorActor], accountDatabaseServices)
 
-}
+  }

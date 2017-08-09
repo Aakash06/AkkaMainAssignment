@@ -8,7 +8,7 @@ class LinkBillerToAccountMaster(accountDatabaseServices: AccountDatabaseServices
   var accountNo= 0
 
   var router: Router = {
-    log.info("Creating user Account ")
+    log.info("Creating Link between account and biller ")
     val routees = Vector.fill(5) {
       val r = context.actorOf(LinkBillerToAccount.props(accountDatabaseServices))
       context watch r
@@ -19,7 +19,7 @@ class LinkBillerToAccountMaster(accountDatabaseServices: AccountDatabaseServices
 
   def receive:Receive = {
     case (accountNo: Long, billerName: String, billerCategory: Category.Value) =>
-      log.info("Forwarding to databaseServiceActor for linking")
+      log.info("Forwarding to child Actor for linking")
       router.route((accountNo, billerName, billerCategory), sender())
 
 

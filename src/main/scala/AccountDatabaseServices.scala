@@ -9,7 +9,7 @@ class AccountDatabaseServices extends AccountDatabase{
     if(getUserDatabase.contains(username)) true else false
   }
 
-  def addAccount(username: String, customerAccount: CustomerAccount): Unit = {
+  def addAccount(username: String, customerAccount: CustomerAccount):Unit = {
     addCustomerAccount(username, customerAccount)
 
   }

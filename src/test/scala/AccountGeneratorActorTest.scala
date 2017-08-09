@@ -2,41 +2,43 @@ import akka.actor.{ActorRef, ActorSystem}
 import akka.testkit.{ImplicitSender, TestKit}
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{BeforeAndAfterEach, FunSuiteLike}
-
+import org.mockito.Mockito._
 class AccountGeneratorActorTest extends TestKit(ActorSystem("CustomerAccountSystem")) with FunSuiteLike
   with BeforeAndAfterEach with ImplicitSender with MockitoSugar {
 
 
-  val accountDatabaseServices = new AccountDatabaseServices
+  val accountDatabaseServices = mock[AccountDatabaseServices]
+  val ac = system.actorOf(AccountGeneratorActorMaster.props(accountDatabaseServices))
+
+
+
+  test("valid account"){
+    val customerAccount = CustomerAccount(4L, "Akansha Sharma", "Noida", "Akansha05", 10.00)
+    doNothing().when(accountDatabaseServices).addAccount(customerAccount.username,customerAccount)
+    ac ! List("Akansha", "Noida", "Akansha05", "10.00")
+
+    expectMsgPF(){
+      case (username: String, resultMsg: String) =>
+        assert(username == "Akansha05" &&
+          resultMsg == "created successfully")
+      }
+    }
+
+  test("username already exists"){
+    val customerAccount = CustomerAccount(4L, "Akansha Sharma", "Noida", "Akansha05", 10.00)
+    when(accountDatabaseServices.checkUserName("Akansha05"))thenReturn true
+    ac ! List("Akansha", "Noida", "Akansha05", "10.00")
+
+    expectMsgPF(){
+      case (username: String, resultMsg: String) =>
+        assert(username == "Akansha05" &&
+          resultMsg == "username already exist")
+    }
+  }
+
+
   protected def afterAll(): Unit = {
     system.terminate()
   }
 
-  val AccountGeneratorActorRef : ActorRef = system.actorOf(AccountGeneratorActorMaster.props(accountDatabaseServices))
-
-  test("Testing AccountGeneratorActor which should return map containing status message for each account") {
-
-   // val customerAccount = CustomerAccount(1L, "Akansha", "Noida", "Akansha", 0.00)
-
-    AccountGeneratorActorRef ! List("Akansha", "Noida", "Akansha", "10.00")
-
-    expectMsgPF() {
-      case (username: String, resultMsg: String) =>
-        assert(username == "Akansha" &&
-          resultMsg == "created successfully")
-    }
-  }
-
-  test("Testing AccountGeneratorActor for Already existing username") {
-
-    // val customerAccount = CustomerAccount(1L, "Akansha", "Noida", "Akansha", 0.00)
-
-    AccountGeneratorActorRef ! List("Akansha", "Noida", "Akansha", "10.00")
-
-    expectMsgPF() {
-      case (username: String, resultMsg: String) =>
-        assert(username == "Akansha" &&
-          resultMsg == "username already exist")
-    }
-  }
 }

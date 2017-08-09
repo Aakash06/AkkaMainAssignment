@@ -23,22 +23,16 @@ class SalaryDepositorActor(databaseService: AccountDatabaseServices) extends Act
 
 class BillProcessingActor(databaseService: AccountDatabaseServices) extends Actor with ActorLogging {
 
-  val CAR_BILL: Double = 1000
-  val PHONE_BILL: Double = 500
-  val INTERNET_BILL: Double = 800
-  val ELECTRICITY_BILL: Double = 4000
-  val FOOD_BILL: Double = 3500
-
   override def receive: Receive = {
 
     case (accountNo: Long, billerCategory: Category.Value) =>
       billerCategory match {
 
-        case Category.car => databaseService.payBill(accountNo, CAR_BILL)
-        case Category.phone => databaseService.payBill(accountNo, PHONE_BILL)
-        case Category.internet => databaseService.payBill(accountNo, INTERNET_BILL)
-        case Category.electricity => databaseService.payBill(accountNo, ELECTRICITY_BILL)
-        case Category.food => databaseService.payBill(accountNo, FOOD_BILL)
+        case Category.car => databaseService.payBill(accountNo, Category.car)
+        case Category.phone => databaseService.payBill(accountNo, Category.phone)
+        case Category.internet => databaseService.payBill(accountNo, Category.internet)
+        case Category.electricity => databaseService.payBill(accountNo, Category.electricity)
+        case Category.food => databaseService.payBill(accountNo, Category.food)
 
       }
   }
