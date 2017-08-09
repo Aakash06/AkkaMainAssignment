@@ -1,16 +1,15 @@
-import akka.actor.{ActorRef, ActorSystem}
+import akka.actor.ActorSystem
 import akka.testkit.{ImplicitSender, TestKit}
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{BeforeAndAfterEach, FunSuiteLike}
 import org.mockito.Mockito._
+
+
 class AccountGeneratorActorTest extends TestKit(ActorSystem("CustomerAccountSystem")) with FunSuiteLike
   with BeforeAndAfterEach with ImplicitSender with MockitoSugar {
 
-
   val accountDatabaseServices = mock[AccountDatabaseServices]
   val ac = system.actorOf(AccountGeneratorActorMaster.props(accountDatabaseServices))
-
-
 
   test("valid account"){
     val customerAccount = CustomerAccount(4L, "Akansha Sharma", "Noida", "Akansha05", 10.00)
@@ -35,7 +34,6 @@ class AccountGeneratorActorTest extends TestKit(ActorSystem("CustomerAccountSyst
           resultMsg == "username already exist")
     }
   }
-
 
   protected def afterAll(): Unit = {
     system.terminate()

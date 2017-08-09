@@ -22,7 +22,6 @@ class LinkBillerToAccountMaster(accountDatabaseServices: AccountDatabaseServices
       log.info("Forwarding to child Actor for linking")
       router.route((accountNo, billerName, billerCategory), sender())
 
-
     case Terminated(a) =>
       log.info("Terminating")
       router = router.removeRoutee(a)
@@ -41,7 +40,10 @@ class LinkBillerToAccount(accountDatabaseServices: AccountDatabaseServices) exte
   override def receive: Receive = {
     case (accountNo: Long, billerName: String, billerCategory: Category.Value) =>
       val listOfBillers = accountDatabaseServices.getLinkedBiller.getOrElse(accountNo , Nil)
-      if(listOfBillers.exists(_.billerCategory == billerCategory)) {
+      log.info(listOfBillers + "")
+
+
+      if(!listOfBillers.exists(_.billerCategory == billerCategory)) {
         accountDatabaseServices.addLink(accountNo, billerName, billerCategory)
         sender() ! "Successfully Linked your account with the given biller!"
       }

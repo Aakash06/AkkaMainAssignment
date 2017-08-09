@@ -28,13 +28,13 @@ trait AccountDatabase {
 
   private val linkedBiller: mutable.Map[Long, ListBuffer[LinkBiller]] = Map(
     1L -> ListBuffer(
-      LinkBiller(Category.phone, "PhoneBiller", 1L, currentDate, 1000.00, 0, 0, 0.00),
+      LinkBiller(Category.phone, "PhoneBiller", 1L, currentDate, 1000.00, 0, 0, 110.00),
       LinkBiller(Category.internet, "InternetBiller", 1L, currentDate, 500.00, 0, 0, 0.00)
     ),
     2L -> ListBuffer(
       LinkBiller(Category.electricity, "ElectricityBiller", 20L, currentDate, 800.00, 0, 0, 0.00),
       LinkBiller(Category.food, "FoodBiller", 20L, currentDate, 1300.00, 0, 0, 0.00),
-      LinkBiller(Category.car, "CarBiller", 20L, currentDate, 800.00, 0, 0, 0.00)
+      LinkBiller(Category.car, "CarBiller", 20L, currentDate, 800.00, 0, 0, 200.00)
     )
   )
 
